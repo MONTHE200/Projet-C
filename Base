@@ -1,0 +1,213 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define BASE 2
+
+typedef struct {
+    int *Tdigits;  // Tdigits[0] = MSB, Tdigits[Taille-1] = LSB
+    int Taille;    // Nombre de bits significatifs
+    int Signe;     // +1 positif, -1 négatif, 0 nul
+} BigBinary;
+
+// ==================== FONCTIONS DE BASE ====================
+
+// Crée un BigBinary vide
+BigBinary createBigBinary(int size) {
+    BigBinary bb;
+    bb.Tdigits = (int*)malloc(sizeof(int) * size);
+    bb.Taille = size;
+    bb.Signe = 0;
+    for (int i = 0; i < size; i++) {
+        bb.Tdigits[i] = 0;
+    }
+    return bb;
+}
+
+// Libère la mémoire
+void libereBigBinary(BigBinary *nb) {
+    if (nb->Tdigits != NULL) {
+        free(nb->Tdigits);
+        nb->Tdigits = NULL;
+    }
+    nb->Taille = 0;
+    nb->Signe = 0;
+}
+
+// Crée un BigBinary à partir d'une chaîne binaire
+BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
+    BigBinary nb;
+    int n = strlen(chaine);
+    nb.Taille = 0;
+
+    // Compter les bits valides
+    for (int i = 0; i < n; i++) {
+        if (chaine[i] == '0' || chaine[i] == '1') {
+            nb.Taille++;
+        }
+    }
+
+    // Allouer et remplir le tableau
+    nb.Tdigits = (int*)malloc(sizeof(int) * nb.Taille);
+    nb.Signe = +1;
+
+    int index = 0;
+    int tousZeros = 1;
+
+    for (int i = 0; i < n; i++) {
+        if (chaine[i] == '0' || chaine[i] == '1') {
+            nb.Tdigits[index] = chaine[i] - '0';
+            if (nb.Tdigits[index] == 1) tousZeros = 0;
+            index++;
+        }
+    }
+
+    if (tousZeros) {
+        nb.Signe = 0;
+    }
+
+    return nb;
+}
+
+// Affiche un BigBinary
+void afficheBigBinary(BigBinary nb) {
+    if (nb.Signe == -1) printf("-");
+    if (nb.Signe == 0 || nb.Taille == 0) {
+        printf("0\n");
+        return;
+    }
+    for (int i = 0; i < nb.Taille; i++) {
+        printf("%d", nb.Tdigits[i]);
+    }
+    printf("\n");
+}
+
+// ==================== FONCTIONS DE COMPARAISON ====================
+
+bool Egal(BigBinary A, BigBinary B) {
+    if (A.Signe != B.Signe) return false;
+    if (A.Taille != B.Taille) return false;
+
+    for (int i = 0; i < A.Taille; i++) {
+        if (A.Tdigits[i] != B.Tdigits[i]) return false;
+    }
+    return true;
+}
+
+bool Inferieur(BigBinary A, BigBinary B) {
+    // Cas des signes différents
+    if (A.Signe < B.Signe) return true;
+    if (A.Signe > B.Signe) return false;
+
+    // Même signe, comparer les tailles
+    if (A.Taille < B.Taille) return (A.Signe == 1);
+    if (A.Taille > B.Taille) return (A.Signe == -1);
+
+    // Même taille, comparer bit par bit
+    for (int i = 0; i < A.Taille; i++) {
+        if (A.Tdigits[i] < B.Tdigits[i]) return (A.Signe == 1);
+        if (A.Tdigits[i] > B.Tdigits[i]) return (A.Signe == -1);
+    }
+
+    return false; // Égaux
+}
+
+// ==================== OPÉRATIONS ARITHMÉTIQUES ====================
+
+// Addition de deux BigBinary positifs
+BigBinary Addition(BigBinary A, BigBinary B) {
+    int maxTaille = (A.Taille > B.Taille) ? A.Taille : B.Taille;
+    BigBinary resultat = createBigBinary(maxTaille + 1); // +1 pour la retenue
+
+    int retenue = 0;
+    int idxA = A.Taille - 1;
+    int idxB = B.Taille - 1;
+    int idxRes = resultat.Taille - 1;
+
+    while (idxRes >= 0) {
+        int bitA = (idxA >= 0) ? A.Tdigits[idxA] : 0;
+        int bitB = (idxB >= 0) ? B.Tdigits[idxB] : 0;
+
+        int somme = bitA + bitB + retenue;
+        resultat.Tdigits[idxRes] = somme % 2;
+        retenue = somme / 2;
+
+        idxA--; idxB--; idxRes--;
+    }
+
+    // Gérer le signe et supprimer les zéros non significatifs
+    resultat.Signe = 1;
+
+    // Supprimer les zéros en tête
+    int debut = 0;
+    while (debut < resultat.Taille - 1 && resultat.Tdigits[debut] == 0) {
+        debut++;
+    }
+
+    if (debut > 0) {
+        int nouvelleTaille = resultat.Taille - debut;
+        int *nouveauxDigits = (int*)malloc(sizeof(int) * nouvelleTaille);
+        for (int i = 0; i < nouvelleTaille; i++) {
+            nouveauxDigits[i] = resultat.Tdigits[debut + i];
+        }
+        free(resultat.Tdigits);
+        resultat.Tdigits = nouveauxDigits;
+        resultat.Taille = nouvelleTaille;
+    }
+
+    return resultat;
+}
+
+// Soustraction (A - B) avec A >= B
+BigBinary Soustraction(BigBinary A, BigBinary B) {
+    BigBinary resultat = createBigBinary(A.Taille);
+    resultat.Signe = 1;
+
+    int emprunt = 0;
+    int idxA = A.Taille - 1;
+    int idxB = B.Taille - 1;
+    int idxRes = resultat.Taille - 1;
+
+    while (idxRes >= 0) {
+        int bitA = (idxA >= 0) ? A.Tdigits[idxA] : 0;
+        int bitB = (idxB >= 0) ? B.Tdigits[idxB] : 0;
+
+        int diff = bitA - bitB - emprunt;
+        if (diff < 0) {
+            diff += 2;
+            emprunt = 1;
+        } else {
+            emprunt = 0;
+        }
+
+        resultat.Tdigits[idxRes] = diff;
+
+        idxA--; idxB--; idxRes--;
+    }
+
+    // Supprimer les zéros en tête
+    int debut = 0;
+    while (debut < resultat.Taille - 1 && resultat.Tdigits[debut] == 0) {
+        debut++;
+    }
+
+    if (debut > 0) {
+        int nouvelleTaille = resultat.Taille - debut;
+        int *nouveauxDigits = (int*)malloc(sizeof(int) * nouvelleTaille);
+        for (int i = 0; i < nouvelleTaille; i++) {
+            nouveauxDigits[i] = resultat.Tdigits[debut + i];
+        }
+        free(resultat.Tdigits);
+        resultat.Tdigits = nouveauxDigits;
+        resultat.Taille = nouvelleTaille;
+    }
+
+    // Si résultat = 0
+    if (resultat.Taille == 1 && resultat.Tdigits[0] == 0) {
+        resultat.Signe = 0;
+    }
+
+    return resultat;
+}
+
