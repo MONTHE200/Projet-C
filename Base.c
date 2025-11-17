@@ -238,49 +238,17 @@ void divisePar2(BigBinary *nb) {
 // ==================== EXEMPLE D'UTILISATION (main) ====================
 
 int main(void) {
-    // Exemple 1 : utilisation manuelle (comme votre premier code) pour 83 => 1010011
-    int bits83[] = {1,0,1,0,0,1,1};
-    int taille = sizeof(bits83) / sizeof(bits83[0]);
-
-    BigBinary nb1 = initBigBinary(taille, +1);
-    for (int i = 0; i < taille; ++i) nb1.Tdigits[i] = bits83[i];
-
-    printf("Valeur initiale (méthode 1) : ");
-    afficheBigBinary(nb1);
-
-    divisePar2(&nb1);
-    printf("Apres division par 2 (méthode 1) : ");
-    afficheBigBinary(nb1);
-
-    libereBigBinary(&nb1);
-
-    // Exemple 2 : création depuis chaîne et opérations (méthode 2)
-    BigBinary nb2 = creerBigBinaryDepuisChaine("1010011"); // 83
-    printf("Valeur initiale (méthode 2) : ");
-    afficheBigBinary(nb2);
-
-    divisePar2(&nb2);
-    printf("Apres division par 2 (méthode 2) : ");
-    afficheBigBinary(nb2);
-
-    // Test addition
-    BigBinary a = creerBigBinaryDepuisChaine("1101"); // 13
-    BigBinary b = creerBigBinaryDepuisChaine("1011"); // 11
-    BigBinary s = Addition(a,b); // 24 => 11000
-    printf("Addition 1101 + 1011 = ");
-    afficheBigBinary(s);
-
-    // Test soustraction (A >= B)
-    BigBinary sub = Soustraction(s, creerBigBinaryDepuisChaine("1011")); // 24 - 11 = 13
-    printf("Soustraction 11000 - 1011 = ");
-    afficheBigBinary(sub);
-
-    // Libérations
-    libereBigBinary(&nb2);
-    libereBigBinary(&a);
-    libereBigBinary(&b);
-    libereBigBinary(&s);
-    libereBigBinary(&sub);
+  // Ajoutez les tests du modulo à la fin du main
+    printf("\nTest Modulo:\n");
+    BigBinary num1 = creerBigBinaryDepuisChaine("1101"); 
+    BigBinary num2 = creerBigBinaryDepuisChaine("101");  
+    BigBinary mod;                
+    printf("1101 mod 101 = ");
+    afficheBigBinary(mod);
+    
+    libereBigBinary(&num1);
+    libereBigBinary(&num2);
+    libereBigBinary(&mod);
 
     return 0;
 }
