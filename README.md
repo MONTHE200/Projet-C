@@ -1,6 +1,10 @@
 # Projet S5 
 
- Manipulation de Grands Entiers Binaires 
+ Manipulation de Grands Entiers Binaires & Algorithmes RSA 
+
+ ##  Descrription 
+ Ce projet consiste à développer, en langage C, une bibliothèque permettant de manipuler des grands entiers binaires (BigBinary), c’est-à-dire des nombres trop grands pour tenir dans les types standards (int, long, unsigned long long, etc.).
+L’objectif est de reconstruire, étape par étape, les opérations arithmétiques fondamentales utilisées en cryptographie et en cybersécurité.
 
  ## Fonctionnalités
 
@@ -14,7 +18,23 @@
     calcul du modulo sans division
     multiplication égyptienne
      exponentiation rapide modulaire
-
+- RSA simplifié
 ## Installation 
 '''bash
-git clone https://github.com/
+https://github.com/MONTHE200/Projet-C.git
+cd Projet-C
+npm install
+npm start
+
+## Technologie utilisée
+Langage C
+
+## Contributeurs 
+
+TEDEM JOGO Christy 
+MONTHE TCHOKONTE Aubérine Audrey 
+SOUMELONG EBEMBO Frank Morel
+
+
+
+
