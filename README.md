@@ -21,9 +21,9 @@ L’objectif est de reconstruire, étape par étape, les opérations arithmétiq
 - RSA simplifié
 ## Installation 
 '''bash
-https://github.com/MONTHE200/Projet-C.git
-cd Projet-C
-npm install
+https://github.com/MONTHE200/Projet-C.git,
+cd Projet-C,
+npm install,
 npm start
 
 ## Technologie utilisée
@@ -31,8 +31,8 @@ Langage C
 
 ## Contributeurs 
 
-TEDEM JOGO Christy 
-MONTHE TCHOKONTE Aubérine Audrey 
+TEDEM JOGO Christy, 
+MONTHE TCHOKONTE Aubérine Audrey,
 SOUMELONG EBEMBO Frank Morel
 
 
