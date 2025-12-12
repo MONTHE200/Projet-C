@@ -2,7 +2,7 @@
 
  Manipulation de Grands Entiers Binaires & Algorithmes RSA 
 
- ##  Descrription 
+ ##  Description 
  Ce projet consiste à développer, en langage C, une bibliothèque permettant de manipuler des grands entiers binaires (BigBinary), c’est-à-dire des nombres trop grands pour tenir dans les types standards (int, long, unsigned long long, etc.).
 L’objectif est de reconstruire, étape par étape, les opérations arithmétiques fondamentales utilisées en cryptographie et en cybersécurité.
 
